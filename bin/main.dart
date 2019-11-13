@@ -9,6 +9,25 @@
 // Example
 // flattenList([1, "2", [3, function () { return 4; }, [ "five" ], "six", true, { prop: "val" }]])
 //  ➞ [1, "2", 3, 4, "five", "six", true, { prop: "val" }]
+List flattenList(List inputList) {
+  List outputList = [];
+  for (int i = 0; i < inputList.length; i++) {
+   if (inputList[i] is List) {
+      outputList.addAll(flattenList(inputList[i]));
+    }
+    else if (inputList[i] is Function) {
+
+      outputList.add(inputList[i]());
+    }
+    else {
+      outputList.add(inputList[i]);
+    }
+  }
+  return outputList;
+}
 
 main() {
+   print(flattenList([1, "2", [3,  () { return 4; }, [ "five" ], "six", true, { 'prop': "val" }],]));
+   print(flattenList([]));
+   print(flattenList([[1],2,[3,4],[[5,6],[7,8],],[[[9],10],11],12]));
 }
