@@ -9,25 +9,43 @@
 // Example
 // flattenList([1, "2", [3, function () { return 4; }, [ "five" ], "six", true, { prop: "val" }]])
 //  ➞ [1, "2", 3, 4, "five", "six", true, { prop: "val" }]
-List flattenList(List inputList) {
-  List outputList = [];
-  for (int i = 0; i < inputList.length; i++) {
-   if (inputList[i] is List) {
-      outputList.addAll(flattenList(inputList[i]));
-    }
-    else if (inputList[i] is Function) {
 
-      outputList.add(inputList[i]());
-    }
-    else {
-      outputList.add(inputList[i]);
+
+flattenListMain(List inputList){
+  List outputList = [];
+  flattenList(inputList,outputList);
+  return outputList;
+}
+
+List flattenList(List inputList, List outputList) {
+  for (int i = 0; i < inputList.length; i++) {
+    dynamic element = inputList[i];
+
+    if (element is List) {
+      flattenList(element,outputList);
+    } else if (element is Function) {
+      dynamic functionResult = element();
+
+      if (functionResult is List) {
+        flattenList(functionResult,outputList);
+      } else {
+        outputList.add(functionResult);
+      }
+      //outputList.add(inputList[i]());
+
+    } else {
+      outputList.add(element);
     }
   }
   return outputList;
 }
 
 main() {
-   print(flattenList([1, "2", [3,  () { return 4; }, [ "five" ], "six", true, { 'prop': "val" }],]));
-   print(flattenList([]));
-   print(flattenList([[1],2,[3,4],[[5,6],[7,8],],[[[9],10],11],12]));
+   print(flattenListMain([1, "2", [3,  () { return 4; }, [ "five" ], "six", true, { 'prop': "val" }],]));
+   print(flattenListMain([]));
+    print(flattenListMain([[1],2,[3,4],[[5,6],[7,8],],[[[9],10],11],12]));
+
+
+  print(flattenListMain([1,[2],() { return 3;},() { return [4];},() { return [[5]];}]));
+  print(flattenListMain([[1],2,[3],[[4]],[[[[5]]]]]));
 }
